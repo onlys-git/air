@@ -1,8 +1,9 @@
-const DURATION_SECONDS = 5 * 60;
+const DEFAULT_DURATION_SECONDS = 5 * 60;
 const STORAGE_KEY = "gonggi-guinness-records";
 
 const state = {
-  remaining: DURATION_SECONDS,
+  duration: DEFAULT_DURATION_SECONDS,
+  remaining: DEFAULT_DURATION_SECONDS,
   running: false,
   timerId: null,
   records: [],
@@ -17,9 +18,13 @@ const elements = {
   entryForm: document.querySelector("#entryForm"),
   teamName: document.querySelector("#teamName"),
   teamScore: document.querySelector("#teamScore"),
+  timerLabel: document.querySelector("#timerLabel"),
   timeDisplay: document.querySelector("#timeDisplay"),
   timeProgress: document.querySelector("#timeProgress"),
+  durationButtons: document.querySelectorAll(".duration-button"),
   toggleTimer: document.querySelector("#toggleTimer"),
+  controlsToggle: document.querySelector("#controlsToggle"),
+  timerControls: document.querySelector("#timerControls"),
   resetTimer: document.querySelector("#resetTimer"),
   resetAll: document.querySelector("#resetAll"),
   fullscreenToggle: document.querySelector("#fullscreenToggle"),
@@ -88,15 +93,40 @@ function formatTime(seconds) {
 
 function renderTimer() {
   elements.timeDisplay.textContent = formatTime(state.remaining);
+  elements.timeProgress.max = state.duration;
   elements.timeProgress.value = state.remaining;
+  elements.timerLabel.textContent = `${Math.round(state.duration / 60)} MINUTE CHALLENGE`;
   elements.toggleTimer.textContent = state.running ? "중지" : "시작";
   elements.timerPanel.classList.toggle("is-running", state.running);
   elements.timerPanel.classList.toggle("is-paused", !state.running);
   elements.timerPanel.classList.toggle("is-finished", state.remaining === 0);
+
+  elements.durationButtons.forEach((button) => {
+    const buttonSeconds = Number.parseInt(button.dataset.minutes, 10) * 60;
+    button.classList.toggle("is-active", buttonSeconds === state.duration);
+  });
 }
 
 function renderFullscreenButton() {
   elements.fullscreenToggle.textContent = document.fullscreenElement ? "전체화면 해제" : "전체화면";
+}
+
+function setControlsOpen(isOpen) {
+  elements.timerControls.hidden = !isOpen;
+  elements.controlsToggle.setAttribute("aria-expanded", String(isOpen));
+  elements.controlsToggle.textContent = isOpen ? "설정 닫기" : "설정";
+}
+
+function onPress(element, handler) {
+  element.addEventListener("click", handler);
+  element.addEventListener(
+    "touchend",
+    (event) => {
+      event.preventDefault();
+      handler(event);
+    },
+    { passive: false },
+  );
 }
 
 function audioContext() {
@@ -173,7 +203,7 @@ function tick() {
 
 function startTimer() {
   if (state.remaining === 0) {
-    state.remaining = DURATION_SECONDS;
+    state.remaining = state.duration;
   }
 
   state.running = true;
@@ -181,6 +211,7 @@ function startTimer() {
   playTone(660, 0.08, 0.09, "triangle");
   startMusic();
   state.timerId = window.setInterval(tick, 1000);
+  setControlsOpen(false);
   renderTimer();
 }
 
@@ -201,10 +232,24 @@ elements.toggleTimer.addEventListener("click", () => {
   }
 });
 
+onPress(elements.controlsToggle, () => {
+  setControlsOpen(elements.timerControls.hidden);
+});
+
 elements.resetTimer.addEventListener("click", () => {
   pauseTimer();
-  state.remaining = DURATION_SECONDS;
+  state.remaining = state.duration;
   renderTimer();
+});
+
+elements.durationButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const minutes = Number.parseInt(button.dataset.minutes, 10);
+    state.duration = minutes * 60;
+    state.remaining = state.duration;
+    pauseTimer();
+    renderTimer();
+  });
 });
 
 elements.resetAll.addEventListener("click", () => {
@@ -212,7 +257,8 @@ elements.resetAll.addEventListener("click", () => {
   if (!shouldReset) return;
 
   pauseTimer();
-  state.remaining = DURATION_SECONDS;
+  state.duration = DEFAULT_DURATION_SECONDS;
+  state.remaining = state.duration;
   state.records = [];
   elements.entryForm.reset();
   saveRecords();
