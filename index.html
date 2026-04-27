@@ -42,18 +42,30 @@
         </div>
 
         <div class="timer-content">
-          <p class="kicker">5 MINUTE CHALLENGE</p>
+          <p class="kicker" id="timerLabel">5 MINUTE CHALLENGE</p>
           <div class="time-display" id="timeDisplay" aria-live="assertive">05:00</div>
           <progress class="time-progress" id="timeProgress" value="300" max="300"></progress>
-          <div class="timer-actions">
+          <div class="quick-actions">
             <button class="primary" id="toggleTimer" type="button">시작</button>
-            <button class="secondary" id="resetTimer" type="button">초기화</button>
-            <button class="secondary danger-button" id="resetAll" type="button">전체 리셋</button>
-            <button class="secondary" id="fullscreenToggle" type="button">전체화면</button>
-            <label class="sound-toggle">
-              <input id="soundToggle" type="checkbox" checked />
-              <span>사운드</span>
-            </label>
+            <button class="secondary" id="controlsToggle" type="button" aria-expanded="false" aria-controls="timerControls">설정</button>
+          </div>
+          <div class="timer-controls" id="timerControls" hidden>
+            <div class="duration-options" aria-label="타이머 시간 선택">
+              <button class="duration-button" type="button" data-minutes="1">1분</button>
+              <button class="duration-button" type="button" data-minutes="3">3분</button>
+              <button class="duration-button is-active" type="button" data-minutes="5">5분</button>
+              <button class="duration-button" type="button" data-minutes="7">7분</button>
+              <button class="duration-button" type="button" data-minutes="10">10분</button>
+            </div>
+            <div class="timer-actions">
+              <button class="secondary" id="resetTimer" type="button">초기화</button>
+              <button class="secondary danger-button" id="resetAll" type="button">전체 리셋</button>
+              <button class="secondary" id="fullscreenToggle" type="button">전체화면</button>
+              <label class="sound-toggle">
+                <input id="soundToggle" type="checkbox" checked />
+                <span>사운드</span>
+              </label>
+            </div>
           </div>
         </div>
 
