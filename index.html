@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공기놀이 기네스 점수판</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="scoreboard" aria-label="공기놀이 기네스 점수 관리">
+      <section class="left-panel">
+        <section class="best-record" aria-live="polite">
+          <p class="kicker">2026 나눔스쿨 운동회</p>
+          <h1>공기놀이 최고 기록</h1>
+          <div class="best-team" id="bestTeam">아직 기록 없음</div>
+          <div class="best-score"><span id="bestScore">0</span><small>년</small></div>
+        </section>
+
+        <section class="ranking-panel">
+          <div class="ranking-head">
+            <h2>순위</h2>
+            <button class="icon-button danger" id="clearRecords" type="button" title="기록 전체 삭제" aria-label="기록 전체 삭제">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <ol class="rank-list" id="rankList"></ol>
+        </section>
+      </section>
+
+      <section class="timer-panel">
+        <div class="clock-scene" aria-hidden="true">
+          <div class="clock-face">
+            <span class="mark mark-12"></span>
+            <span class="mark mark-3"></span>
+            <span class="mark mark-6"></span>
+            <span class="mark mark-9"></span>
+            <span class="hand hour-hand"></span>
+            <span class="hand minute-hand"></span>
+            <span class="hand second-hand"></span>
+            <span class="pin"></span>
+          </div>
+        </div>
+
+        <div class="timer-content">
+          <p class="kicker">5 MINUTE CHALLENGE</p>
+          <div class="time-display" id="timeDisplay" aria-live="assertive">05:00</div>
+          <progress class="time-progress" id="timeProgress" value="300" max="300"></progress>
+          <div class="timer-actions">
+            <button class="primary" id="toggleTimer" type="button">시작</button>
+            <button class="secondary" id="resetTimer" type="button">초기화</button>
+            <button class="secondary danger-button" id="resetAll" type="button">전체 리셋</button>
+            <button class="secondary" id="fullscreenToggle" type="button">전체화면</button>
+            <label class="sound-toggle">
+              <input id="soundToggle" type="checkbox" checked />
+              <span>사운드</span>
+            </label>
+          </div>
+        </div>
+
+        <form class="entry-form" id="entryForm">
+          <label>
+            <span>팀 이름</span>
+            <input id="teamName" name="teamName" type="text" maxlength="24" autocomplete="off" placeholder="예: 번개팀" required />
+          </label>
+          <label>
+            <span>점수(년)</span>
+            <input id="teamScore" name="teamScore" type="number" min="0" step="1" placeholder="예: 120" required />
+          </label>
+          <button class="primary submit" type="submit">기록 추가</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
